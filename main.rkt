@@ -9,7 +9,8 @@
          nest
          group
          flatten
-         pretty
+         pretty-print
+         pretty-print->string
 
          <?>
          <+>
@@ -30,6 +31,7 @@
          sbracket)
 
 (require racket/match)
+(require (only-in racket/port call-with-output-string))
 (require (only-in racket/promise delay force))
 (require (only-in racket/string string-split string-append*))
 (module+ test (require rackunit))
@@ -66,17 +68,19 @@
     ['line         " "]
     [(-alt a b)    (flatten a)])) ;; by invariant
 
-;; Doc -> String
-(define (layout x)
-  (string-append*
-   (let walk ((x x))
-     (match x
-       ['() '()]
-       [(cons e more)
-        (cons (match e
-                [(? string? s) s]
-                [(? integer? i) (string-append "\n" (make-string i #\space))])
-              (walk (force more)))]))))
+;; OutputPort Doc -> Void
+(define (layout p x)
+  (let walk ((x x))
+    (match x
+      ['() '()]
+      [(cons e more)
+       (match e
+         [(? string? s)
+          (write-string s p)]
+         [(? integer? i)
+          (write-char #\newline p)
+          (for [(n (in-range i))] (write-char #\space p))])
+       (walk (force more))])))
 
 ;; Natural Natural DOC -> Doc
 ;; Best layout for `x` in the remaining `available` columns after
@@ -108,9 +112,14 @@
          [(cons (? string? s) x1) (fits? (- columns (string-length s)) (force x1))]
          [_ #t]))) ;; the other alternatives are '() and (cons (? integer? i) x1), which always fit
 
+;; Natural DOC [OutputPort] -> Void
+(define (pretty-print #:used [used 0] available x [port (current-output-port)])
+  (layout port (best available used x)))
+
 ;; Natural DOC -> String
-(define (pretty available x)
-  (layout (best available 0 x)))
+(define (pretty-print->string #:used [used 0] available x)
+  (call-with-output-string
+   (lambda (p) (pretty-print #:used used available x p))))
 
 ;;---------------------------------------------------------------------------
 ;; Utilities
@@ -222,7 +231,8 @@
     (displayln f)
     (for [(w widths)]
       (displayln (make-string w #\=))
-      (displayln (pretty w (f v))))
+      (pretty-print w (f v))
+      (newline))
     (newline))
 
   (for [(f (list node->DOC-0 node->DOC-1 node->DOC-2))]
