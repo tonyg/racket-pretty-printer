@@ -1,0 +1,569 @@
+raco test: (submod "main.rkt" test)
+#<procedure:node->DOC-0>
+==============
+aaa[bbbbb[ccc,
+          dd],
+    eee,
+    ffff[gg,
+         hhh,
+         ii]]
+==================
+aaa[bbbbb[ccc,
+          dd],
+    eee,
+    ffff[gg,
+         hhh,
+         ii]]
+========================
+aaa[bbbbb[ccc, dd],
+    eee,
+    ffff[gg, hhh, ii]]
+================================================================================
+aaa[bbbbb[ccc, dd], eee, ffff[gg, hhh, ii]]
+
+#<procedure:node->DOC-1>
+==============
+aaa[
+  bbbbb[
+    ccc,
+    dd
+  ],
+  eee,
+  ffff[
+    gg,
+    hhh,
+    ii
+  ]
+]
+==================
+aaa[
+  bbbbb[
+    ccc,
+    dd
+  ],
+  eee,
+  ffff[
+    gg,
+    hhh,
+    ii
+  ]
+]
+========================
+aaa[
+  bbbbb[ ccc, dd ],
+  eee,
+  ffff[ gg, hhh, ii ]
+]
+================================================================================
+aaa[ bbbbb[ ccc, dd ], eee, ffff[ gg, hhh, ii ] ]
+
+#<procedure:node->DOC-2>
+==============
+aaa[bbbbb[ccc,
+          dd],
+    eee,
+    ffff[gg,
+         hhh,
+         ii]]
+==================
+aaa[bbbbb[ccc,
+          dd],
+    eee,
+    ffff[gg, hhh,
+         ii]]
+========================
+aaa[bbbbb[ccc, dd], eee,
+    ffff[gg, hhh, ii]]
+================================================================================
+aaa[bbbbb[ccc, dd], eee, ffff[gg, hhh, ii]]
+
+#<procedure:sexp->DOC-0>
+==============
+(p
+ ((color
+   "red")
+  (font
+   "Times")
+  (size "10"))
+ "Here is some "
+ (em
+  "emphasized")
+ " text."
+ "Here is a "
+ (a
+  ((href
+    "http://example.com/"))
+  "link")
+ " elsewhere.")
+==================
+(p
+ ((color "red")
+  (font "Times")
+  (size "10"))
+ "Here is some "
+ (em "emphasized")
+ " text."
+ "Here is a "
+ (a
+  ((href
+    "http://example.com/"))
+  "link")
+ " elsewhere.")
+========================
+(p
+ ((color "red")
+  (font "Times")
+  (size "10"))
+ "Here is some "
+ (em "emphasized")
+ " text." "Here is a "
+ (a
+  ((href
+    "http://example.com/"))
+  "link")
+ " elsewhere.")
+================================================================================
+(p ((color "red") (font "Times") (size "10")) "Here is some " (em "emphasized")
+ " text." "Here is a " (a ((href "http://example.com/")) "link") " elsewhere.")
+
+#<procedure:sexp->DOC-1>
+==============
+(p
+ ((color
+   "red")
+  (font
+   "Times")
+  (size "10"))
+ "Here is some "
+ (em
+  "emphasized")
+ " text."
+ "Here is a "
+ (a
+  ((href
+    "http://example.com/"))
+  "link")
+ " elsewhere.")
+==================
+(p
+ ((color "red")
+  (font "Times")
+  (size "10"))
+ "Here is some "
+ (em "emphasized")
+ " text."
+ "Here is a "
+ (a
+  ((href
+    "http://example.com/"))
+  "link")
+ " elsewhere.")
+========================
+(p
+ ((color "red")
+  (font "Times")
+  (size "10"))
+ "Here is some "
+ (em "emphasized")
+ " text."
+ "Here is a "
+ (a
+  ((href
+    "http://example.com/"))
+  "link")
+ " elsewhere.")
+================================================================================
+(p
+ ((color "red") (font "Times") (size "10"))
+ "Here is some "
+ (em "emphasized")
+ " text."
+ "Here is a "
+ (a ((href "http://example.com/")) "link")
+ " elsewhere.")
+
+#<procedure:code->DOC>
+==============
+(define x
+  (+ 1
+     (* 2 3)))
+==================
+(define x
+  (+ 1 (* 2 3)))
+========================
+(define x (+ 1 (* 2 3)))
+================================================================================
+(define x (+ 1 (* 2 3)))
+
+#<procedure:code->DOC>
+============================================================
+(define (best available used x)
+  (let be [(w available)
+           (k used)
+           (chunks (list (cons 0 x)))]
+    (when (some-test? chunks)
+      (log-info "Here:")
+      (log-info "we")
+      (log-info "are"))
+    (match chunks
+      ['() '()]
+      [(cons (cons i (<> l r)) cs)
+       (be w k (list* (cons i l) (cons i r) cs))]
+      [(cons (cons i (nest j d)) cs)
+       (be w k (cons (cons (+ i j) d) cs))]
+      [(cons (cons i (? string? s)) cs)
+       (cons s
+             (lambda () (be w (+ k (string-length s)) cs)))]
+      [(cons (cons i 'line) cs)
+       (cons i (lambda () (be w i cs)))]
+      [(cons (cons i (-alt a b)) cs)
+       (better w
+               k
+               (be w k (cons (cons i a) cs))
+               (lambda ()
+                 (be w k (cons (cons i (b )) cs))))])))
+================================================================================
+(define (best available used x)
+  (let be [(w available) (k used) (chunks (list (cons 0 x)))]
+    (when (some-test? chunks)
+      (log-info "Here:")
+      (log-info "we")
+      (log-info "are"))
+    (match chunks
+      ['() '()]
+      [(cons (cons i (<> l r)) cs) (be w k (list* (cons i l) (cons i r) cs))]
+      [(cons (cons i (nest j d)) cs) (be w k (cons (cons (+ i j) d) cs))]
+      [(cons (cons i (? string? s)) cs)
+       (cons s (lambda () (be w (+ k (string-length s)) cs)))]
+      [(cons (cons i 'line) cs) (cons i (lambda () (be w i cs)))]
+      [(cons (cons i (-alt a b)) cs)
+       (better w
+               k
+               (be w k (cons (cons i a) cs))
+               (lambda () (be w k (cons (cons i (b )) cs))))])))
+====================================================================================================
+(define (best available used x)
+  (let be [(w available) (k used) (chunks (list (cons 0 x)))]
+    (when (some-test? chunks)
+      (log-info "Here:")
+      (log-info "we")
+      (log-info "are"))
+    (match chunks
+      ['() '()]
+      [(cons (cons i (<> l r)) cs) (be w k (list* (cons i l) (cons i r) cs))]
+      [(cons (cons i (nest j d)) cs) (be w k (cons (cons (+ i j) d) cs))]
+      [(cons (cons i (? string? s)) cs) (cons s (lambda () (be w (+ k (string-length s)) cs)))]
+      [(cons (cons i 'line) cs) (cons i (lambda () (be w i cs)))]
+      [(cons (cons i (-alt a b)) cs)
+       (better w k (be w k (cons (cons i a) cs)) (lambda () (be w k (cons (cons i (b )) cs))))])))
+
+#<procedure:code->DOC>
+============================================================
+(define (code->DOC c)
+  (match c
+    [`(define ,h ,bs ...)
+     (special-seq->DOC "(define "
+                       code->DOC
+                       (list h)
+                       code->DOC
+                       bs
+                       ")")]
+    [`(lambda (unquote args) ,bs ...)
+     (special-seq->DOC "(lambda "
+                       values
+                       (list (code-seq->DOC "("
+                                            code->DOC
+                                            args
+                                            ")"))
+                       code->DOC
+                       bs
+                       ")")]
+    [`(let ,(? symbol? n) ,args ,bs ...)
+     (special-seq->DOC (format "(let ~a " n)
+                       values
+                       (list (code-seq->DOC "["
+                                            binder->DOC
+                                            args
+                                            "]"))
+                       code->DOC
+                       bs
+                       ")")]
+    [`'(unquote s) (<> "'" (nest 1 (sexp->DOC s)))]
+    [(list 'quasiquote s) (<> "`" (nest 1 (code->DOC s)))]
+    [(list 'unquote s) (<> "," (nest 1 (code->DOC s)))]
+    [(list 'unquote-splicing s)
+     (<> ",@" (nest 2 (code->DOC s)))]
+    [`(match ,d [unquote clauses] ...)
+     (special-seq->DOC "(match "
+                       code->DOC
+                       (list d)
+                       (match-lambda (`(,p ,bs ...)
+                                      (code-seq->DOC "["
+                                                     code->DOC
+                                                     (cons p
+                                                           bs)
+                                                     "]"))
+                                     (cl (code->DOC cl)))
+                       clauses
+                       ")")]
+    [`(when ,e
+        ,bs
+        ...)
+     (special-seq->DOC/vertical "(when "
+                                code->DOC
+                                (list e)
+                                code->DOC
+                                bs
+                                ")")]
+    [`(,(? symbol? n) ,args ...)
+     (code-seq->DOC (format "(~a " n) code->DOC args ")")]
+    [(? list? s) (code-seq->DOC "(" code->DOC s ")")]
+    [s (sexp->DOC s)]))
+================================================================================
+(define (code->DOC c)
+  (match c
+    [`(define ,h ,bs ...)
+     (special-seq->DOC "(define " code->DOC (list h) code->DOC bs ")")]
+    [`(lambda (unquote args) ,bs ...)
+     (special-seq->DOC "(lambda "
+                       values
+                       (list (code-seq->DOC "(" code->DOC args ")"))
+                       code->DOC
+                       bs
+                       ")")]
+    [`(let ,(? symbol? n) ,args ,bs ...)
+     (special-seq->DOC (format "(let ~a " n)
+                       values
+                       (list (code-seq->DOC "[" binder->DOC args "]"))
+                       code->DOC
+                       bs
+                       ")")]
+    [`'(unquote s) (<> "'" (nest 1 (sexp->DOC s)))]
+    [(list 'quasiquote s) (<> "`" (nest 1 (code->DOC s)))]
+    [(list 'unquote s) (<> "," (nest 1 (code->DOC s)))]
+    [(list 'unquote-splicing s) (<> ",@" (nest 2 (code->DOC s)))]
+    [`(match ,d [unquote clauses] ...)
+     (special-seq->DOC "(match "
+                       code->DOC
+                       (list d)
+                       (match-lambda (`(,p ,bs ...)
+                                      (code-seq->DOC "["
+                                                     code->DOC
+                                                     (cons p bs)
+                                                     "]"))
+                                     (cl (code->DOC cl)))
+                       clauses
+                       ")")]
+    [`(when ,e
+        ,bs
+        ...)
+     (special-seq->DOC/vertical "(when " code->DOC (list e) code->DOC bs ")")]
+    [`(,(? symbol? n) ,args ...)
+     (code-seq->DOC (format "(~a " n) code->DOC args ")")]
+    [(? list? s) (code-seq->DOC "(" code->DOC s ")")]
+    [s (sexp->DOC s)]))
+====================================================================================================
+(define (code->DOC c)
+  (match c
+    [`(define ,h ,bs ...) (special-seq->DOC "(define " code->DOC (list h) code->DOC bs ")")]
+    [`(lambda (unquote args) ,bs ...)
+     (special-seq->DOC "(lambda "
+                       values
+                       (list (code-seq->DOC "(" code->DOC args ")"))
+                       code->DOC
+                       bs
+                       ")")]
+    [`(let ,(? symbol? n) ,args ,bs ...)
+     (special-seq->DOC (format "(let ~a " n)
+                       values
+                       (list (code-seq->DOC "[" binder->DOC args "]"))
+                       code->DOC
+                       bs
+                       ")")]
+    [`'(unquote s) (<> "'" (nest 1 (sexp->DOC s)))]
+    [(list 'quasiquote s) (<> "`" (nest 1 (code->DOC s)))]
+    [(list 'unquote s) (<> "," (nest 1 (code->DOC s)))]
+    [(list 'unquote-splicing s) (<> ",@" (nest 2 (code->DOC s)))]
+    [`(match ,d [unquote clauses] ...)
+     (special-seq->DOC "(match "
+                       code->DOC
+                       (list d)
+                       (match-lambda (`(,p ,bs ...) (code-seq->DOC "[" code->DOC (cons p bs) "]"))
+                                     (cl (code->DOC cl)))
+                       clauses
+                       ")")]
+    [`(when ,e ,bs ...) (special-seq->DOC/vertical "(when " code->DOC (list e) code->DOC bs ")")]
+    [`(,(? symbol? n) ,args ...) (code-seq->DOC (format "(~a " n) code->DOC args ")")]
+    [(? list? s) (code-seq->DOC "(" code->DOC s ")")]
+    [s (sexp->DOC s)]))
+
+#<procedure:xexpr->DOC>
+==============
+<p color="red"
+   font="Times"
+   size="10">
+  Here is some
+  <em>
+    emphasized
+  </em>
+  text.
+  Here is a
+  <a href="http://example.com/">
+    link
+  </a>
+  elsewhere.
+</p>
+==================
+<p color="red"
+   font="Times"
+   size="10">
+  Here is some
+  <em>
+    emphasized
+  </em>
+  text. Here is a
+  <a href="http://example.com/">
+    link
+  </a>
+  elsewhere.
+</p>
+========================
+<p color="red"
+   font="Times"
+   size="10">
+  Here is some
+  <em> emphasized </em>
+  text. Here is a
+  <a href="http://example.com/">
+    link
+  </a>
+  elsewhere.
+</p>
+================================================================================
+<p color="red" font="Times" size="10">
+  Here is some <em> emphasized </em> text. Here is a
+  <a href="http://example.com/"> link </a> elsewhere.
+</p>
+
+#<procedure:xexpr->DOC>
+============================================================
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1"/>
+    <title> Demo document </title>
+    <link rel="stylesheet"
+          href="/bootstrap/css/bootstrap.min.css"
+          type="text/css"/>
+    <link rel="stylesheet" href="/jquery-ui.min.css"
+          type="text/css"/>
+    <link rel="stylesheet" href="/style.css"
+          type="text/css"/>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top"
+         role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button"
+                  class="navbar-toggle collapsed"
+                  data-toggle="collapse"
+                  data-target="#navbar">
+            <span class="sr-only"> Toggle navigation </span>
+            <span class="icon-bar"/>
+            <span class="icon-bar"/>
+            <span class="icon-bar"/>
+          </button>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav"/>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      <h1> Heading </h1>
+      <p> Body </p>
+    </div>
+    <script type="text/javascript" src="/jquery.min.js"/>
+    <script type="text/javascript"
+            src="/jquery.tablesorter.min.js"/>
+    <script type="text/javascript" src="/jquery-ui.min.js"/>
+    <script type="text/javascript"
+            src="/bootstrap/js/bootstrap.min.js"/>
+    <script type="text/javascript" src="/site.js"/>
+  </body>
+</html>
+================================================================================
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title> Demo document </title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"
+          type="text/css"/>
+    <link rel="stylesheet" href="/jquery-ui.min.css" type="text/css"/>
+    <link rel="stylesheet" href="/style.css" type="text/css"/>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed"
+                  data-toggle="collapse" data-target="#navbar">
+            <span class="sr-only"> Toggle navigation </span>
+            <span class="icon-bar"/>
+            <span class="icon-bar"/>
+            <span class="icon-bar"/>
+          </button>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav"/>
+        </div>
+      </div>
+    </nav>
+    <div class="container"> <h1> Heading </h1> <p> Body </p> </div>
+    <script type="text/javascript" src="/jquery.min.js"/>
+    <script type="text/javascript" src="/jquery.tablesorter.min.js"/>
+    <script type="text/javascript" src="/jquery-ui.min.js"/>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"/>
+    <script type="text/javascript" src="/site.js"/>
+  </body>
+</html>
+====================================================================================================
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title> Demo document </title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" type="text/css"/>
+    <link rel="stylesheet" href="/jquery-ui.min.css" type="text/css"/>
+    <link rel="stylesheet" href="/style.css" type="text/css"/>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                  data-target="#navbar">
+            <span class="sr-only"> Toggle navigation </span>
+            <span class="icon-bar"/>
+            <span class="icon-bar"/>
+            <span class="icon-bar"/>
+          </button>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse"> <ul class="nav navbar-nav"/> </div>
+      </div>
+    </nav>
+    <div class="container"> <h1> Heading </h1> <p> Body </p> </div>
+    <script type="text/javascript" src="/jquery.min.js"/>
+    <script type="text/javascript" src="/jquery.tablesorter.min.js"/>
+    <script type="text/javascript" src="/jquery-ui.min.js"/>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"/>
+    <script type="text/javascript" src="/site.js"/>
+  </body>
+</html>
+
